@@ -1,6 +1,5 @@
+-- | Maze representation
 module Maze(Square, Maze, newMaze, isWall, genWalls, validSquare, numSquares) where
-
-
 
 type Square = (Integer, Integer)
 

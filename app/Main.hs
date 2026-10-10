@@ -8,7 +8,9 @@ import Data.List
 main :: IO ()
 main = do
     
-    let walls1 = (genWalls (1,2) (1,8)) ++ (genWalls (1,1) (4,1)) ++ (genWalls (8,1) (9,1)) ++ (genWalls (4,4) (4,8)) ++ (genWalls (6,2) (6,8)) ++ [(7,9), (5,3), (4,0)]
+    let walls1 = (genWalls (1,2) (1,8)) ++ (genWalls (1,1) (4,1)) 
+		++ (genWalls (8,1) (9,1)) ++ (genWalls (4,4) (4,8)) 
+		++ (genWalls (6,2) (6,8)) ++ [(7,9), (5,3), (4,0)]
     let ms1 = newMaze 10 10 walls1
     --let mu1 = newMaze 10 10 ((4,2):walls1)
     let ini = (0,0)
@@ -44,17 +46,17 @@ main = do
     --let fin = (14,14)
     --allSearchs ms4 ini fin
     --allSearchs mu4 ini fin
-    --laberinto 4: intratable salvo para IDA* (1 minuto)
+    --maze 4: unfeasible except for IDA* (1 min)
 
 allSearchs :: Maze -> Square -> Square -> IO()
 allSearchs m ini fin = do
 
-    putStrLn "Probando para el laberinto: "
+    putStrLn "Running in maze: "
     putStrLn $ show m
-    putStrLn $ "\nProbando IDA* en laberinto:\n" ++ show (idaStar m (manhattanDistance fin) ini fin)
-    putStrLn $ "\nProbando A* en laberinto:\n" ++ show (astar m (manhattanDistance fin) ini fin)
-    --putStrLn $ "\nProbando iddfs:\n" ++ show (iddfs m ini fin)
-    --putStrLn $ "\nProbando simpleIddfs:\n" ++ show (simpleIddfs m ini fin)
-    --putStrLn $ "\nProbando dfs:\n" ++ show (dfs m 1000 ini fin)
-    --putStrLn $ "\nProbando bfs:\n" ++ show (bfs m ini fin)
+    putStrLn $ "\nRunning IDA* in maze:\n" ++ show (idaStar m (manhattanDistance fin) ini fin)
+    putStrLn $ "\nRunning A* in maze:\n" ++ show (astar m (manhattanDistance fin) ini fin)
+    --putStrLn $ "\nRunning iddfs:\n" ++ show (iddfs m ini fin)
+    --putStrLn $ "\nRunning simpleIddfs:\n" ++ show (simpleIddfs m ini fin)
+    --putStrLn $ "\nRunning dfs:\n" ++ show (dfs m 1000 ini fin)
+    --putStrLn $ "\nRunning bfs:\n" ++ show (bfs m ini fin)
     

@@ -1,3 +1,5 @@
+-- | Search algorithms
+
 module Search where
 
 import Maze

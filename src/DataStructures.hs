@@ -1,3 +1,5 @@
+-- | Implementation of a Fifo
+
 module DataStructures (Fifo(..), newFifo, enqueueMult, dequeue) where
 
 -- | Fifo list

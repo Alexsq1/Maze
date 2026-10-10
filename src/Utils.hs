@@ -1,3 +1,5 @@
+-- | Auxiliar functions
+
 module Utils (unique, zipSort) where
 
 -- | Implementation of quickSort algorithm
@@ -26,7 +28,6 @@ mergeSort xs = zipSort ysOrd zsOrd
         zsOrd = mergeSort zs
 
 -- | Auxiliar of mergeSort joins two sorted lists into a sorted one
---Recibe 2 listas ordenadas, las entrelaza
 zipSort :: Ord a => [a] -> [a] -> [a]
 zipSort [] xs = xs
 zipSort xs [] = xs
