@@ -38,36 +38,9 @@ expandValidPaths m currPath = xpValids
 	-- only select those that increased the length after deleting duplicates (deleting cycles)
         xpValids = filter (\path -> length path > length currPath) (map unique expanded)          
           
-{-
-Programar:
-Búsqueda en anchura         Hecho
-Búsqueda en profundidad     Hecho
-IDDFS                       Hecho
-A*                          Hecho
-IDA*
-
--}
-
-{-
-FALTARÍA
-
-A*
-Contar heurísticas. Iterar sobre [ [(Square, Integer)] ] (path y distancia desde origen)
-Al generar (expand, expandValid etc), calcular dist acumulada + heurística, y ordenar la lista según eso
-
-IDA*
-Va a haber que modificar el dfs, pero búsqueda es igual
-Si dist acumulada + heur > dMax, podar (guardar el mínimo de los que se podan)
-dMax inicial: heurística de inicio
-Siguiente iteración: valor mínimo de los que se podaron (guardarlos)
-Podría estar chulo explorar las ramas del dfs según heurística
-
--}
-
 
 {-
 walls1 = (genWalls (1,2) (1,8)) ++ (genWalls (1,1) (4,1)) ++ (genWalls (8,1) (9,1)) ++ (genWalls (4,4) (4,8)) ++ (genWalls (6,2) (6,8)) ++ [(7,9), (5,3), (4,0)]
-    
 -}
 
           
