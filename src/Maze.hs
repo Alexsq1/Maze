@@ -27,8 +27,8 @@ instance Show Maze where
 nthRow :: Maze -> Integer -> [Square]
 nthRow m index = [(index, x) | x <- [0 .. (columns m) - 1]]
 
-nthColumn :: Maze -> Integer -> [Square]
-nthColumn m index = [(x, index) | x <- [0 .. (rows m) - 1]]
+--nthColumn :: Maze -> Integer -> [Square]
+--nthColumn m index = [(x, index) | x <- [0 .. (rows m) - 1]]
 
 displaySq :: Maze -> Square -> String
 displaySq m sq = if (isWall m sq) then "X " else ". "
@@ -37,6 +37,7 @@ displaySq m sq = if (isWall m sq) then "X " else ". "
 isWall :: Maze -> Square -> Bool
 isWall maze sq = elem sq (walls maze)
 
+-- | Generates a wall between 2 squares
 genWalls :: (Square) -> (Square) -> [(Square)]
 genWalls (x1, y1) (x2, y2) = [(x,y) | x <- [x1 .. x2] , y <- [y1 .. y2]]
 

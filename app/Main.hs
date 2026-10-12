@@ -2,7 +2,6 @@ module Main where
 
 import Search
 import Maze
-import Data.List
 
 
 main :: IO ()

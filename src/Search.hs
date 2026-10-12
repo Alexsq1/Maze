@@ -10,7 +10,7 @@ import Data.Either
 
 -- | Euclidean distance (squared) between 2 squares
 euclidDistance :: Square -> Square -> Float
-euclidDistance (x1, y1) (x2, y2) = sqrt (((xf1 - xf2) ^ 2) + ((yf1 - yf2) ^ 2))
+euclidDistance (x1, y1) (x2, y2) = sqrt (((xf1 - xf2) ^ (2 :: Int)) + ((yf1 - yf2) ^ (2 :: Int)))
     where
         [xf1, xf2, yf1, yf2] = map (fromInteger) [x1, x2, y1, y2]
 
@@ -26,7 +26,7 @@ adjacent m (x, y) = filter (\t -> (not (isWall m t)) && validSquare m t) cands
 
 -- | Takes a path, returns all the paths with 1 more square
 expandValidPaths :: Maze -> [Square] -> [[Square]]
-expandValidPaths m [] = [[]]
+expandValidPaths _ [] = [[]]
 expandValidPaths m currPath = xpValids
     where
         lastSquare = last currPath
@@ -54,9 +54,9 @@ dfs :: Maze 	    -- ^ Maze
 	-> Square   -- ^ Source
 	-> Square   -- ^ Destiny
 	-> [Square]
-dfs m dMax ini fin
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = dfs_sgle m 0 dMax [] ini fin
+dfs m0 dMax0 ini0 fin0
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = dfs_sgle m0 0 dMax0 [] ini0 fin0
 
     where
 
@@ -97,9 +97,9 @@ dfs m dMax ini fin
 
 -- | Breadth first search
 bfs :: Maze -> Square -> Square -> [Square]
-bfs m ini fin
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = bfs_aux m (newFifo [[ini]]) fin
+bfs m0 ini0 fin0
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = bfs_aux m0 (newFifo [[ini0]]) fin0
     where
         bfs_aux :: Maze -> Fifo [Square] -> Square -> [Square]
         bfs_aux m fifo fin
@@ -116,9 +116,9 @@ bfs m ini fin
 
 -- | Iterative deepening depht-first search: do dfs with a bound, augment the maximum depth until a solution is not found or the whole maze was explored
 iddfs :: Maze -> Square -> Square -> [Square]
-iddfs m ini fin
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = iddfsIterate m 1 ini fin
+iddfs m0 ini0 fin0
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = iddfsIterate m0 1 ini0 fin0
         where
             iddfsIterate :: Maze -> Integer -> Square -> Square -> [Square]
             iddfsIterate m n ini fin
@@ -159,17 +159,17 @@ iddfs m ini fin
 
 -- | Similar iddfs, but the maximum depth is the number of squares (simplifies the code a lot)
 simpleIddfs :: Maze -> Square -> Square -> [Square]
-simpleIddfs m ini fin
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = iddfsIterate m 1 max ini fin
+simpleIddfs m0 ini0 fin0
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = iddfsIterate m0 1 maxSq ini0 fin0
 
     where
-        max = numSquares m
+        maxSq = numSquares m0
 
         iddfsIterate :: Maze -> Integer -> Integer -> Square -> Square -> [Square]
-        iddfsIterate m n max ini fin
-            | n > max = []
-            | subsearch == [] = iddfsIterate m (n+1) max ini fin
+        iddfsIterate m n maxSq2 ini fin
+            | n > maxSq2 = []
+            | subsearch == [] = iddfsIterate m (n+1) maxSq2 ini fin
             | otherwise = subsearch
                 where
                     subsearch = dfs m n ini fin
@@ -178,7 +178,7 @@ simpleIddfs m ini fin
 data Path = Path [Square] Integer Integer deriving (Eq, Show)
 
 instance Ord Path where
-    compare (Path xs1 real1 pred1) (Path xs2 real2 pred2) = compare pred1 pred2
+    compare (Path _ _ pred1) (Path _ _ pred2) = compare pred1 pred2
 
 -- | General A* search
 astar :: Maze			-- ^ Maze
@@ -186,14 +186,14 @@ astar :: Maze			-- ^ Maze
 	-> Square 		-- ^ Source
 	-> Square 		-- ^ Destiny
 	-> [Square]
-astar m heuristic ini fin 
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = astarAux m heuristic [Path [ini] 0 (heuristic ini)] fin
+astar m0 h ini0 fin0 
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = astarAux m0 h [Path [ini0] 0 (h ini0)] fin0
     where
     	-- Receives a list with the paths to be explored
         astarAux :: Maze -> (Square -> Integer) -> [Path] -> Square -> [Square]
         astarAux _ _ [] _ = []						-- nothing to explore
-        astarAux m heuristic ((Path route real expected) : rest) fin
+        astarAux m heuristic ((Path route real _) : rest) fin
             | lastSquare == fin = route                                 -- solution found
             | nextPathSituation == [] = astarAux m heuristic rest fin	-- nothing to expand in the current square, keep searching
             | otherwise = astarAux m heuristic nextPathSituation fin 	-- keep searching
@@ -219,9 +219,9 @@ idaStar :: Maze 		-- ^ Maze
 	-> Square               -- ^ Source
 	-> Square               -- ^ Destiny
 	-> [Square] 
-idaStar m heuristic ini fin 
-    | not (checkSquares m [ini, fin]) = error "Not valid squares"
-    | otherwise = idaStarAux m heuristic (heuristic ini) (numSquares m) ini fin
+idaStar m0 heur ini0 fin0
+    | not (checkSquares m0 [ini0, fin0]) = error "Not valid squares"
+    | otherwise = idaStarAux m0 heur (heur ini0) (numSquares m0) ini0 fin0
     where
         idaStarAux :: Maze -> (Square -> Integer) -> Integer -> Integer -> Square -> Square -> [Square]
         idaStarAux m heuristic dCurr ultimateD ini fin 
@@ -236,32 +236,32 @@ idaStar m heuristic ini fin
 	-- Returns Right [Sq] if a solution is found and Left (pruned, max estimated length) when no solution
         dfs_sgle :: 
             Maze -> (Square -> Integer) -> Integer -> Integer -> [Square] -> Square -> Square -> Either (Bool, Integer) [Square]
-        dfs_sgle m heuristic dCurr dMax visited ini fin
-            -- | dCurr > dMax = Left (True, (dCurr + heuristic ini))                        -- max depth reached: prune
+        dfs_sgle m h dCurr dMax visited ini fin
+            -- | dCurr > dMax = Left (True, (dCurr + h ini))                        -- max depth reached: prune
             | thisSqEstimatedPath > dMax = Left (True, thisSqEstimatedPath)                 -- longer estimated path
             | ini == fin = Right [ini]                                                      -- solution found
             | ini `elem` visited = Left (False, 0)                                          -- visited square
-            | null adj = Left (False, (dCurr + heuristic ini))                              -- path without adjacents
+            | null adj = Left (False, (dCurr + h ini))                              -- path without adjacents
             | isLeft branch = branch                                                        -- solution not found: augment max depth
             | otherwise = Right (ini : (fromRight [] branch))                               -- solution found: recompose
 
             where 
-                thisSqEstimatedPath = dCurr + (heuristic ini)                               -- path estimation 
+                thisSqEstimatedPath = dCurr + (h ini)                               -- path estimation 
                 adj = (adjacent m ini) \\ visited                                           -- Non-visited adjacents
-                branch = dfs_multiple m heuristic (dCurr + 1) dMax adj (ini : visited) fin  -- child search
+                branch = dfs_multiple m h (dCurr + 1) dMax adj (ini : visited) fin  -- child search
 
         dfs_multiple :: 
             Maze -> (Square -> Integer) -> Integer -> Integer -> [Square] -> [Square] -> Square -> Either (Bool, Integer) [Square]
 
-        dfs_multiple m heuristic dCurr _ [] _ _ = Left (False, dCurr)                 -- all the branches are searched, no solutin
-        dfs_multiple m heuristic dCurr dMax (x:xs) visited fin                          -- search
+        dfs_multiple _ _ dCurr _ [] _ _ = Left (False, dCurr)                 -- all the branches are searched, no solutin
+        dfs_multiple m h dCurr dMax (x:xs) visited fin                          -- search
             | isRight thisBranch = thisBranch                                           -- Solution found in this branch: recompose
             | isRight (otherBranches) = otherBranches                                   -- Solution found in another branch
             | otherwise = Left ((pruned1 || pruned2), (max num1 num2))                  -- Solution not found: unify branches
 
             where 
-                thisBranch = dfs_sgle m heuristic dCurr dMax visited x fin              -- Keep searching
-                otherBranches = dfs_multiple m heuristic dCurr dMax xs visited fin      -- Search recursively other branches
+                thisBranch = dfs_sgle m h dCurr dMax visited x fin              -- Keep searching
+                otherBranches = dfs_multiple m h dCurr dMax xs visited fin      -- Search recursively other branches
                 (pruned1, num1) = fromLeft (False, 0) thisBranch
                 (pruned2, num2) = fromLeft (False, 0) otherBranches
 
